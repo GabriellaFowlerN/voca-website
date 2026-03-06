@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>voca — Teacher Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-logo"><img src="assets/voca logo.png" alt="voca logo"></div>
+        <div class="nav-links">
+            <a href="homepage.html" class="nav-link">HOME</a>
+            <a href="teacher-dashboard.html" class="nav-link active">CLASS</a>
+        </div>
+    </nav>
+
+    <div id="teacher-dashboard" class="page">
+        <div class="container">
+            <h2>Class Topics</h2>
+            <div class="topics-grid">
+                <button class="topic-card" data-topic="FOOD" onclick="selectTopic('FOOD')">FOOD</button>
+                <button class="topic-card" data-topic="FAMILY" onclick="selectTopic('FAMILY')">FAMILY</button>
+                <button class="topic-card" data-topic="TRADITIONS" onclick="selectTopic('TRADITIONS')">TRADITIONS</button>
+            </div>
+            <p class="select-language">Select your language you want to learn</p>
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ARABIC" onclick="selectLanguage('ARABIC')">ARABIC</button>
+                <button class="lang-btn" data-lang="FRENCH" onclick="selectLanguage('FRENCH')">FRENCH</button>
+                <button class="lang-btn" data-lang="HINDI" onclick="selectLanguage('HINDI')">HINDI</button>
+            </div>
+            <button id="teacherStartBtn" class="start-button" onclick="prepareClass()" disabled>Start Class Activity</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

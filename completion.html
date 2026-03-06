@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>voca — Lesson Complete</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-logo"><img src="assets/voca logo.png" alt="voca logo"></div>
+        <div class="nav-links">
+            <a href="homepage.html" class="nav-link">HOME</a>
+            <a href="student-dashboard.html" class="nav-link">PROFILE</a>
+            <a href="student-learn.html" class="nav-link">LEARN</a>
+        </div>
+    </nav>
+
+    <div class="container center-content completion-screen">
+        <h2>LESSON COMPLETE!</h2>
+        <div class="wings-icon"></div>
+        <p id="completionMessage" class="completion-message">Great job!</p>
+        <button class="return-button" onclick="window.location.href='homepage.html'">RETURN TO DASHBOARD →</button>
+        <button class="return-button" onclick="window.location.href='badges.html'">VIEW BADGES ON PROFILE →</button>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const msgEl = document.getElementById('completionMessage');
+            msgEl.textContent = 'Great job! Badge added to your profile.';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>voca - Language Learning</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+        <!-- Intro Video Overlay -->
+        <div id="introVideoOverlay" style="position:fixed;z-index:9999;top:0;left:0;width:100vw;height:100vh;background:#000;display:flex;align-items:center;justify-content:center;">
+            <video id="introVideo" src="assets/voca-video.mp4" style="max-width:100vw;max-height:100vh;" autoplay playsinline></video>
+            <div style="position:absolute;top:32px;left:32px;z-index:10000;">
+                <button id="introSkipBtn" type="button" style="color:#f3f3f3;font-size:1rem;font-family:sans-serif;text-shadow:0 2px 8px #000;background:rgba(30,30,30,0.55);padding:8px 14px;border-radius:8px;letter-spacing:0.5px;border:1px solid rgba(255,255,255,0.5);cursor:pointer;">Skip Video</button>
+            </div>
+        </div>
+        <script>
+        // Hide all main content until video ends
+        document.addEventListener('DOMContentLoaded', function() {
+            var overlay = document.getElementById('introVideoOverlay');
+            var video = document.getElementById('introVideo');
+            var skipBtn = document.getElementById('introSkipBtn');
+            // Pause background scrolling
+            document.body.style.overflow = 'hidden';
+
+            // Request audio playback by default.
+            video.muted = false;
+            
+            // Explicitly play the video
+            var playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(function(error) {
+                    console.log('Autoplay prevented:', error);
+                    // If autoplay with sound is blocked, let user start playback via controls.
+                    video.setAttribute('controls', 'controls');
+                });
+            }
+            
+            // When video ends, hide overlay and go to homepage
+            video.onended = function() {
+                overlay.style.display = 'none';
+                document.body.style.overflow = '';
+                // Always open the dedicated homepage file after intro.
+                sessionStorage.setItem('voca_intro_seen', 'true');
+                window.location.href = 'homepage.html';
+            };
+            // Dedicated skip button avoids accidental skips while interacting with the video.
+            skipBtn.onclick = function() {
+                video.pause();
+                overlay.style.display = 'none';
+                document.body.style.overflow = '';
+                sessionStorage.setItem('voca_intro_seen', 'true');
+                window.location.href = 'homepage.html';
+            };
+        });
+        </script>
+    <!-- Teacher Topic Dashboard -->
+    <div class="page" id="teacher-dashboard">
+        <nav class="navbar">
+            <div class="nav-logo"><img src="assets/voca logo.png" alt="voca logo"></div>
+            <div class="nav-links">
+                <a href="#" onclick="showPageWithHistory('teacher-dashboard')" class="nav-link active">HOME</a>
+                <a href="#" onclick="showPageWithHistory('teacher-class')" class="nav-link">CLASS</a>
+            </div>
+        </nav>
+        <div class="container">
+            <h2>Class Topics</h2>
+            <div class="topics-grid">
+                <button class="topic-card" data-topic="FOOD" onclick="selectTopic('FOOD')">FOOD</button>
+                <button class="topic-card" data-topic="FAMILY" onclick="selectTopic('FAMILY')">FAMILY</button>
+                <button class="topic-card" data-topic="TRADITIONS" onclick="selectTopic('TRADITIONS')">TRADITIONS</button>
+            </div>
+            <p class="select-language">Select your language you want to learn</p>
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ARABIC" onclick="selectLanguage('ARABIC')">ARABIC</button>
+                <button class="lang-btn" data-lang="FRENCH" onclick="selectLanguage('FRENCH')">FRENCH</button>
+                <button class="lang-btn" data-lang="HINDI" onclick="selectLanguage('HINDI')">HINDI</button>
+            </div>
+            <button id="teacherStartBtn" class="start-button" onclick="prepareClass()" disabled>Start Class Activity</button>
+        </div>
+    </div>
+
+    <!-- Teacher Class Code -->
+    <div class="page" id="teacher-class-code" style="display: none;">
+        <nav class="navbar">
+            <div class="nav-logo"><img src="assets/voca logo.png" alt="voca logo"></div>
+            <div class="nav-links">
+                <a href="#" onclick="showPageWithHistory('teacher-dashboard')" class="nav-link">HOME</a>
+                <a href="#" onclick="showPageWithHistory('teacher-class-code')" class="nav-link active">CLASS</a>
+            </div>
+        </nav>
+            <div class="container center-content">
+            <div id="codeDisplay" class="code-display">----</div>
+            <p id="joinedCount" class="share-text">Students joined: 0</p>
+            <p class="share-text">Share the code with your class!</p>
+            <button id="startActivityBtn" class="start-button" onclick="startClassActivity()" disabled>Start Class Activity</button>
+        </div>
+    </div>
+
+    <!-- Guided Class Micro Lesson 1 -->
+    <div class="page" id="lesson-1" style="display: none;">
+        <nav class="navbar">
+            <div class="nav-logo"><img src="assets/voca logo.png" alt="voca logo"></div>
+            <div class="nav-links">
+                <a href="#" onclick="showPageWithHistory('teacher-dashboard')" class="nav-link">HOME</a>
+                <a href="#" onclick="showPageWithHistory('teacher-class-code')" class="nav-link active">CLASS</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="lesson-header">
+                <img id="lessonFlag" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 30'%3E%3Crect width='50' height='30' fill='%23FF9933'/%3E%3Crect x='0' y='10' width='50' height='10' fill='white'/%3E%3Crect x='0' y='20' width='50' height='10' fill='%23138808'/%3E%3C/svg%3E" alt="flag" class="flag-icon">
+                <h3 id="lessonPhrase">—</h3>
+            </div>
+            <div class="lesson-content">
+                <div class="lesson-card">
+                    <h4>Literal Meaning</h4>
+                    <p id="lessonLiteral">—</p>
+                </div>
+                <div class="lesson-card">
+                    <h4>Cultural Context</h4>
+                    <p id="lessonContext">—</p>
+                </div>
+            </div>
+            <div class="lesson-buttons">
+                <button id="listenBtn" class="lesson-action-btn" onclick="playLessonAudio()">
+                    <span class="speaker-icon">🔊</span>
+                    LISTEN
+                </button>
+                <button class="lesson-action-btn" onclick="repeatSlow()">REPEAT AS A CLASS (SLOW)</button>
+                <button id="nextLessonBtn" class="lesson-action-btn next-btn" onclick="nextLesson()">NEXT →</button>
+            </div>
+        </div>
+        <div id="progressDisplay" class="progress">0/0 lessons completed — keep going!</div>
+    </div>
+
+    <!-- Guided Class Micro Lesson 2 -->
+    <div class="page" id="lesson-2" style="display: none;">
+        <nav class="navbar">
+            <div class="nav-logo"><img src="assets/voca logo.png" alt="voca logo"></div>
+            <div class="nav-links">
+                <a href="#" onclick="showPageWithHistory('teacher-dashboard')" class="nav-link">HOME</a>
+                <a href="#" onclick="showPageWithHistory('teacher-class-code')" class="nav-link active">CLASS</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="lesson-header">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 30'%3E%3Crect width='50' height='30' fill='%23138808'/%3E%3Crect x='0' y='10' width='50' height='10' fill='white'/%3E%3Crect x='10' y='8' width='30' height='14' fill='%23FF9933'/%3E%3C/svg%3E" alt="Indian flag" class="flag-icon">
+                <h3>सुप्रभातम्</h3>
+            </div>
+            <div class="lesson-content">
+                <div class="lesson-card">
+                    <h4>Literal Meaning</h4>
+                    <p>"Good morning"</p>
+                </div>
+                <div class="lesson-card">
+                    <h4>Cultural Context</h4>
+                    <p>A respectful greeting used in Sanskrit and Indian languages, emphasizing cultural heritage.</p>
+                </div>
+            </div>
+            <div class="lesson-buttons">
+                <button class="lesson-action-btn" onclick="toggleAudio('lesson-2-audio')">
+                    <span class="speaker-icon">🔊</span>
+                    LISTEN
+                </button>
+                <button class="lesson-action-btn" onclick="showPage('lesson-2')">REPEAT AS A CLASS (SLOW)</button>
+                <button class="lesson-action-btn next-btn" onclick="showPage('completion')">NEXT →</button>
+            </div>
+        </div>
+        <audio id="lesson-2-audio" src=""></audio>
+    </div>
+
+    <!-- Lesson Completion Screen -->
+    <div class="page" id="completion" style="display: none;">
+        <nav class="navbar">
+            <div class="nav-logo"><img src="assets/voca logo.png" alt="voca logo"></div>
+            <div class="nav-links">
+                <a href="#" onclick="showPageWithHistory('teacher-dashboard')" class="nav-link">HOME</a>
+                <a href="#" onclick="showPageWithHistory('teacher-class-code')" class="nav-link active">CLASS</a>
+            </div>
+        </nav>
+        <div class="container center-content completion-screen">
+            <h2>LESSON COMPLETE!</h2>
+            <div class="wings-icon"><img src="assets/voca logo.png" alt="voca logo" class="logo-bounce"></div>
+            <button class="return-button" onclick="showPage('teacher-dashboard')">RETURN TO DASHBOARD →</button>
+        </div>
+    </div>
+
+    <!-- Student Topic Dashboard -->
+    <div class="page" id="student-dashboard" style="display: none;">
+        <nav class="navbar">
+            <div class="nav-logo"><img src="assets/voca logo.png" alt="voca logo"></div>
+            <div class="nav-links">
+                <a href="#" onclick="showPageWithHistory('student-dashboard')" class="nav-link active">HOME</a>
+                <a href="#" onclick="showPageWithHistory('student-profile')" class="nav-link">PROFILE</a>
+                <a href="#" onclick="showPageWithHistory('student-learn')" class="nav-link">LEARN</a>
+            </div>
+        </nav>
+        <div class="container">
+            <h2>Enter your Class Code</h2>
+            <input type="text" id="classCodeInput" class="code-input" placeholder="••••" maxlength="4">
+            <button class="start-button" onclick="joinClass()">Join your class!</button>
+            <button class="start-button secondary" onclick="showPageWithHistory('student-learn')">Learn on my own!</button>
+            <script>
+            // Enable self-study mode when 'Learn on my own' is clicked
+            document.querySelector('.start-button.secondary').addEventListener('click', function() {
+                currentState.classCode = null;
+                currentState.mode = 'self';
+                currentState.selectedTopic = null;
+                currentState.selectedLanguage = null;
+                currentState.lessonIndex = 0;
+            });
+            </script>
+        </div>
+    </div>
+
+    <!-- Student Learn Page -->
+    <div class="page" id="student-learn" style="display: none;">
+        <nav class="navbar">
+            <div class="nav-logo"><img src="assets/voca logo.png" alt="voca logo"></div>
+            <div class="nav-links">
+                <a href="#" onclick="showPageWithHistory('student-dashboard')" class="nav-link">HOME</a>
+                <a href="#" onclick="showPageWithHistory('student-profile')" class="nav-link">PROFILE</a>
+                <a href="#" onclick="showPageWithHistory('student-learn')" class="nav-link active">LEARN</a>
+            </div>
+        </nav>
+        <div class="container">
+            <h2>Select a Topic</h2>
+            <div class="topics-grid">
+                <button class="topic-card" data-topic="FOOD" onclick="selectStudentTopic('FOOD')">FOOD</button>
+                <button class="topic-card" data-topic="FAMILY" onclick="selectStudentTopic('FAMILY')">FAMILY</button>
+                <button class="topic-card" data-topic="TRADITIONS" onclick="selectStudentTopic('TRADITIONS')">TRADITIONS</button>
+            </div>
+            <p class="select-language">Select your language you want to learn</p>
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ARABIC" onclick="selectStudentLanguage('ARABIC')">ARABIC</button>
+                <button class="lang-btn" data-lang="FRENCH" onclick="selectStudentLanguage('FRENCH')">FRENCH</button>
+                <button class="lang-btn" data-lang="HINDI" onclick="selectStudentLanguage('HINDI')">HINDI</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Profile Page -->
+    <div class="page" id="student-profile" style="display: none;">
+        <nav class="navbar">
+            <div class="nav-logo"><img src="assets/voca logo.png" alt="voca logo"></div>
+            <div class="nav-links">
+                <a href="#" onclick="showPageWithHistory('student-dashboard')" class="nav-link">HOME</a>
+                <a href="#" onclick="showPage('student-profile')" class="nav-link active">PROFILE</a>
+                <a href="#" onclick="showPage('student-learn')" class="nav-link">LEARN</a>
+            </div>
+        </nav>
+        <div class="container">
+            <h2>My Roots</h2>
+            <p class="profile-subtitle">See the badges you earned for completing topics about your heritage!</p>
+            <div class="badges-grid">
+                <div class="badge">
+                    <div class="badge-image">🇮🇳</div>
+                    <p>HINDI COURSE 2025</p>
+                </div>
+                <div class="badge">
+                    <div class="badge-image">🇫🇷</div>
+                    <p>FRENCH COURSE 2025</p>
+                </div>
+                <div class="badge">
+                    <div class="badge-image">🇸🇦</div>
+                    <p>ARABIC COURSE 2025</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Lesson Page (dynamic) -->
+    <div class="page" id="student-lesson" style="display: none;">
+        <nav class="navbar">
+            <div class="nav-logo"><img src="assets/voca logo.png" alt="voca logo"></div>
+            <div class="nav-links">
+                <a href="#" onclick="showPage('student-dashboard')" class="nav-link">HOME</a>
+                <a href="#" onclick="showPage('student-profile')" class="nav-link">PROFILE</a>
+                <a href="#" onclick="showPage('student-learn')" class="nav-link active">LEARN</a>
+            </div>
+        </nav>
+        <div class="container">
+            <div class="lesson-header">
+                <img id="lessonFlag_student" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 30'%3E%3Crect width='50' height='30' fill='%23FF9933'/%3E%3Crect x='0' y='10' width='50' height='10' fill='white'/%3E%3Crect x='0' y='20' width='50' height='10' fill='%23138808'/%3E%3C/svg%3E" alt="flag" class="flag-icon">
+                <h3 id="lessonPhrase_student">—</h3>
+            </div>
+            <div class="lesson-content">
+                <div class="lesson-card">
+                    <h4>Literal Meaning</h4>
+                    <p id="lessonLiteral_student">—</p>
+                </div>
+                <div class="lesson-card">
+                    <h4>Cultural Context</h4>
+                    <p id="lessonContext_student">—</p>
+                </div>
+            </div>
+            <div class="lesson-buttons">
+                <button id="listenBtn_student" class="lesson-action-btn" onclick="playLessonAudio()">
+                    <span class="speaker-icon">🔊</span>
+                    LISTEN
+                </button>
+                <button class="lesson-action-btn" onclick="repeatSlow()">REPEAT (SLOW)</button>
+                <button id="nextLessonBtn_student" class="lesson-action-btn next-btn" onclick="nextLesson()">NEXT →</button>
+            </div>
+        </div>
+        <div id="progressDisplay_student" class="progress">0/0 lessons completed — keep going!</div>
+    </div>
+
+    <!-- Student Waiting Room (after joining, before teacher starts) -->
+    <div class="page" id="student-wait" style="display: none;">
+        <nav class="navbar">
+            <div class="nav-logo"><img src="assets/voca logo.png" alt="voca logo"></div>
+            <div class="nav-links">
+                <a href="#" onclick="showPage('student-dashboard')" class="nav-link">HOME</a>
+            </div>
+        </nav>
+        <div class="container center-content">
+            <h2>Waiting for teacher to start...</h2>
+            <p class="share-text">You're connected — when the teacher starts, this lesson will begin.</p>
+            <button class="return-button" onclick="showPageWithHistory('student-dashboard')">Cancel and return</button>
+        </div>
+    </div>
+
+    <!-- Student Completion Screen -->
+    <div class="page" id="student-completion" style="display: none;">
+        <nav class="navbar">
+            <div class="nav-logo"><img src="assets/voca logo.png" alt="voca logo"></div>
+            <div class="nav-links">
+                <a href="#" onclick="showPageWithHistory('student-dashboard')" class="nav-link">HOME</a>
+                <a href="#" onclick="showPageWithHistory('student-profile')" class="nav-link">PROFILE</a>
+                <a href="#" onclick="showPageWithHistory('student-learn')" class="nav-link">LEARN</a>
+            </div>
+        </nav>
+        <div class="container center-content completion-screen">
+            <h2>LESSON COMPLETE!</h2>
+            <div class="wings-icon"><img src="assets/voca logo.png" alt="voca logo" class="logo-bounce"></div>
+            <p class="completion-message" id="completionMessage">Great job!</p>
+            <button class="return-button" onclick="showPage('student-dashboard')">RETURN TO DASHBOARD →</button>
+            <script>
+            // Show badge only if in class mode
+            if (currentState.classCode && currentState.mode !== 'self') {
+                document.getElementById('completionMessage').textContent = 'Great job! Badge added to your profile.';
+            } else {
+                document.getElementById('completionMessage').textContent = 'Great job! Lesson complete.';
+            }
+            </script>
+        </div>
+    </div>
+
+    <!-- Home/Welcome Page -->
+    <div class="page" id="home" style="display: none;">
+        <nav class="navbar">
+            <div class="nav-logo"><img src="assets/voca logo.png" alt="vocal! logo"></div>
+        </nav>
+        <div class="container center-content welcome">
+            <h1>voca</h1>
+            <p>Learn languages while celebrating your heritage</p>
+            <div class="welcome-buttons">
+                <button class="start-button" onclick="showPageWithHistory('teacher-dashboard')">I'm a Teacher</button>
+                <button class="start-button secondary" onclick="showPageWithHistory('student-dashboard')">I'm a Student</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

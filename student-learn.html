@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>voca — Learn</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-logo"><img src="assets/voca logo.png" alt="voca logo"></div>
+        <div class="nav-links">
+            <a href="homepage.html" class="nav-link">HOME</a>
+            <a href="student-dashboard.html" class="nav-link">PROFILE</a>
+            <a href="student-learn.html" class="nav-link active">LEARN</a>
+        </div>
+    </nav>
+    <div class="container">
+        <h2>Select a Topic</h2>
+        <div class="topics-grid">
+            <button class="topic-card" data-topic="FOOD" onclick="selectStudentTopic('FOOD')">FOOD</button>
+            <button class="topic-card" data-topic="FAMILY" onclick="selectStudentTopic('FAMILY')">FAMILY</button>
+            <button class="topic-card" data-topic="TRADITIONS" onclick="selectStudentTopic('TRADITIONS')">TRADITIONS</button>
+        </div>
+        <p class="select-language">Select your language you want to learn</p>
+        <div class="language-buttons">
+            <button class="lang-btn" data-lang="ARABIC" onclick="selectStudentLanguage('ARABIC')">ARABIC</button>
+            <button class="lang-btn" data-lang="FRENCH" onclick="selectStudentLanguage('FRENCH')">FRENCH</button>
+            <button class="lang-btn" data-lang="HINDI" onclick="selectStudentLanguage('HINDI')">HINDI</button>
+        </div>
+        <p id="studentSelectionHint" style="text-align: center; color: #999; margin-top: 1rem; font-size: 0.95rem;">Select both a topic and language to begin your lesson</p>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Enable self-study mode
+        document.addEventListener('DOMContentLoaded', function() {
+            currentState.mode = 'self';
+            currentState.classCode = null;
+            currentState.lessonIndex = 0;
+        });
+    </script>
+</body>
+</html>
