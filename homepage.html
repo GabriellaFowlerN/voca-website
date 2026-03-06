@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+        // Force first-time entry through intro video in this browser tab.
+        if (!sessionStorage.getItem('voca_intro_seen')) {
+            window.location.replace('index.html');
+        }
+    </script>
+    <title>voca — Home</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-home">
+        <div class="nav-logo"><img src="assets/voca-logo.png" alt="voca logo"></div>
+        <div class="nav-links">
+            <a href="homepage.html" class="nav-link active">HOME</a>
+            <a href="teacher-dashboard.html" class="nav-link">CLASS</a>
+        </div>
+    </nav>
+
+    <div class="floating-text floating-text-1">Hola!</div>
+    <div class="floating-text floating-text-2">أهلا</div>
+    <div class="floating-text floating-text-3">مرحبا</div>
+    <div class="floating-text floating-text-4">नमस्कार</div>
+    <div class="floating-text floating-text-5">Ciao!</div>
+    <div class="floating-text floating-text-6">Namaste!</div>
+
+    <div class="container center-content welcome">
+        <p class="lead">Learn languages while celebrating your heritage</p>
+        <div class="welcome-buttons">
+            <a class="start-button" href="teacher-dashboard.html">I'm a Teacher</a>
+            <a class="start-button secondary" href="student-dashboard.html">I'm a Student</a>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

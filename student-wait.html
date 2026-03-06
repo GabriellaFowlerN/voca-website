@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>voca — Waiting Room</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-logo"><img src="assets/voca logo.png" alt="voca logo"></div>
+        <div class="nav-links">
+            <a href="homepage.html" class="nav-link">HOME</a>
+        </div>
+    </nav>
+    <div class="container center-content">
+        <h2>Waiting for teacher to start...</h2>
+        <p id="waitCode" class="share-text">Connected to class: ----</p>
+        <p class="share-text">When the teacher starts, this lesson will begin.</p>
+        <button class="return-button" onclick="window.location.href='student-dashboard.html'">Cancel and return</button>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const code = localStorage.getItem('voca_current_class');
+            if (code) document.getElementById('waitCode').textContent = `Connected to class: ${code}`;
+            const key = 'voca_class_' + code;
+            const poll = setInterval(() => {
+                const started = localStorage.getItem(key + '_started');
+                if (started === 'true') {
+                    clearInterval(poll);
+                    window.location.href = 'lesson.html';
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

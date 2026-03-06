@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>voca — Lesson</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-logo"><img src="assets/voca logo.png" alt="voca logo"></div>
+        <div class="nav-links">
+            <a href="homepage.html" class="nav-link">HOME</a>
+            <a href="student-dashboard.html" class="nav-link">PROFILE</a>
+            <a href="teacher-dashboard.html" class="nav-link active">LEARN</a>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="lesson-header">
+            <img id="lessonFlag" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 30'%3E%3Crect width='50' height='30' fill='%23FF9933'/%3E%3Crect x='0' y='10' width='50' height='10' fill='white'/%3E%3Crect x='0' y='20' width='50' height='10' fill='%23138808'/%3E%3C/svg%3E" alt="flag" class="flag-icon">
+            <h3 id="lessonPhrase">—</h3>
+        </div>
+        <div class="lesson-content">
+            <div class="lesson-card">
+                <h4>Literal Meaning</h4>
+                <p id="lessonLiteral">—</p>
+            </div>
+            <div class="lesson-card">
+                <h4>Cultural Context</h4>
+                <p id="lessonContext">—</p>
+            </div>
+        </div>
+        <div class="lesson-buttons">
+            <button class="lesson-action-btn" onclick="playLessonAudio()">
+                <span class="speaker-icon">🔊</span>
+                LISTEN
+            </button>
+            <button class="lesson-action-btn" onclick="repeatSlow()">REPEAT (SLOW)</button>
+            <button class="lesson-action-btn next-btn" onclick="nextLesson()">NEXT →</button>
+        </div>
+        <div id="progressDisplay" class="progress">0/0 lessons completed — keep going!</div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if this is class-based or self-study
+            const code = localStorage.getItem('voca_current_class');
+            const selfTopic = localStorage.getItem('voca_self_study_topic');
+            const selfLang = localStorage.getItem('voca_self_study_language');
+            
+            if (code && localStorage.getItem('voca_class_' + code + '_started') === 'true') {
+                // Class-based lesson
+                currentState.classCode = code;
+                const topic = localStorage.getItem('voca_class_' + code + '_topic');
+                const lang = localStorage.getItem('voca_class_' + code + '_language');
+                if (topic) currentState.selectedTopic = topic;
+                if (lang) currentState.selectedLanguage = lang;
+                currentState.mode = 'student';
+                currentState.lessonIndex = 0;
+                loadLesson();
+            } else if (selfTopic && selfLang) {
+                // Self-study mode
+                currentState.selectedTopic = selfTopic;
+                currentState.selectedLanguage = selfLang;
+                currentState.mode = 'self';
+                currentState.lessonIndex = 0;
+                loadLesson();
+            }
+        });
+    </script>
+</body>
+</html>

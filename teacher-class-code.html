@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>voca — Class Code</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-logo"><img src="assets/voca logo.png" alt="voca logo"></div>
+        <div class="nav-links">
+            <a href="homepage.html" class="nav-link">HOME</a>
+            <a href="teacher-dashboard.html" class="nav-link">CLASS</a>
+        </div>
+    </nav>
+
+    <div class="container center-content">
+        <div id="codeDisplay" class="code-display">----</div>
+        <p id="joinedCount" class="share-text">Students joined: 0</p>
+        <p class="share-text">Share the code with your class!</p>
+        <button id="startActivityBtn" class="start-button" onclick="startClassActivity()" disabled>Start Class Activity</button>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // initialize page using voca_current_class from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const code = localStorage.getItem('voca_current_class');
+            if (code) {
+                document.getElementById('codeDisplay').textContent = code;
+                // set currentState for functions in script.js
+                if (typeof currentState !== 'undefined') {
+                    currentState.classCode = code;
+                    currentState.mode = 'teacher';
+                }
+            }
+            const key = 'voca_class_' + code;
+            const joinedEl = document.getElementById('joinedCount');
+            const startBtn = document.getElementById('startActivityBtn');
+            setInterval(() => {
+                const arr = JSON.parse(localStorage.getItem(key) || '[]');
+                const n = arr.length;
+                if (joinedEl) joinedEl.textContent = `Students joined: ${n}`;
+                if (startBtn) startBtn.disabled = n === 0;
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
